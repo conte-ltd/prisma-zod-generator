@@ -2,7 +2,6 @@ node_modules
 lib
 package
 npm-debug.log*
-src/generated
 prisma/generated
 .idea
 .DS_Store

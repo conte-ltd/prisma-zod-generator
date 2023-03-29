@@ -184,7 +184,7 @@ export async function generate(options: GeneratorOptions) {
 
     for (const field of outputType.fields) {
       const name = field.name;
-      const modelName = getModelNameWithSelect(name);
+      const modelName = getModelNameWithSelect(name)?.replace('OrThrow', '');
       const hasRelated = models
         .filter((model) => model.name === modelName)
         .some((model) => model.fields.some((field) => field.relationName));

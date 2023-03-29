@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions", "orderByNulls", "filteredRelationCount", "fieldReference", "referentialIntegrity", "metrics", "multiSchema"]
+  previewFeatures = ["orderByNulls", "filteredRelationCount", "fieldReference", "metrics", "multiSchema"]
 }
 
 datasource db {

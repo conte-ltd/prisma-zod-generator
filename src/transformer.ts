@@ -243,7 +243,7 @@ export default class Transformer {
 
   getExportObjectSchema(schema: string, name: string) {
     const schemaName = `${name}ObjectSchema`;
-    const end = `export const ${schemaName}: z.ZodType<Prisma.${name}> = ${schemaName}Base`;
+    const end = `export const ${schemaName} = ${schemaName}Base as z.ZodType<Prisma.${name}>`;
     return `export const ${schemaName}Base = ${schema};\n${end}`;
   }
 
@@ -389,8 +389,7 @@ export default class Transformer {
         declarations: [
           {
             name: `${this.name}ObjectSchema`,
-            initializer: `${this.name}ObjectSchemaBase`,
-            type: `z.ZodType<Prisma.${this.name}>`,
+            initializer: `${this.name}ObjectSchemaBase as z.ZodType<Prisma.${this.name}>`,
           },
         ],
         isExported: true,
@@ -427,8 +426,7 @@ export default class Transformer {
         declarations: [
           {
             name: `${this.name}ObjectSchema`,
-            initializer: `${this.name}ObjectSchemaBase`,
-            type: `z.ZodType<Prisma.${this.name}>`,
+            initializer: `${this.name}ObjectSchemaBase as z.ZodType<Prisma.${this.name}>`,
           },
         ],
         isExported: true,
