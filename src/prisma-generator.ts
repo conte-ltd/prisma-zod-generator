@@ -89,11 +89,16 @@ export async function generate(options: GeneratorOptions) {
       inputTypes: field.inputTypes.filter((inputType) => {
         const exclusion =
           typeof inputType.type === 'string' &&
-          inputType.type.endsWith('RefInput');
+          (inputType.type.endsWith('RefInput') ||
+            inputType.type.includes('Unchecked'));
         return !exclusion;
       }),
     }));
     const name = prismaClientDmmf.schema.inputObjectTypes.prisma[i]?.name;
+    if (name.includes('Unchecked')) {
+      continue;
+    }
+
     const obj = new Transformer({
       name,
       fields,
@@ -115,7 +120,6 @@ export async function generate(options: GeneratorOptions) {
   for (let i = 0; i < prismaClientDmmf.datamodel.models.length; i += 1) {
     const fields = prismaClientDmmf.datamodel.models[i]?.fields;
     const modelName = prismaClientDmmf.datamodel.models[i]?.name;
-
     let name = `${modelName}Select`;
     let obj = new Transformer({
       name,
@@ -188,9 +192,15 @@ export async function generate(options: GeneratorOptions) {
       const hasRelated = models
         .filter((model) => model.name === modelName)
         .some((model) => model.fields.some((field) => field.relationName));
+      const args = field.args.map((arg) => ({
+        ...arg,
+        inputTypes: arg.inputTypes.filter(
+          (type) => !String(type.type).includes('Unchecked'),
+        ),
+      }));
 
       const fields = name.startsWith('groupBy')
-        ? field.args.map((arg) => {
+        ? args.map((arg) => {
             if (arg.name === 'orderBy') {
               return {
                 ...arg,
@@ -207,7 +217,7 @@ export async function generate(options: GeneratorOptions) {
               return arg;
             }
           })
-        : field.args;
+        : args;
 
       if (modelName) {
         fields.push({
